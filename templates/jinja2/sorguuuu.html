@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+
+    <title>PYTHOME | {{ title }}</title>
+
+
+    <!--[if lt IE 9]>
+      <script src="/static/html5shiv.min.js"></script>
+      <script src="/static/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+
+    <link rel="stylesheet" href="/static/easy-autocomplete.min.css">
+    <link rel="stylesheet" href="/static/easy-autocomplete.themes.min.css">
+
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 10px;
+        }
+
+        #AramaDIV {
+            position: fixed;
+            top: 10px;
+            right: 0;
+            width: 100%;
+        }
+
+        details {
+            border-radius: 3px;
+            background: #EEE;
+            margin: 1em 0;
+        }
+
+        summary {
+            background: #333;
+            color: #FFF;
+            border-radius: 3px;
+            padding: 5px 10px;
+            outline: none;
+        }
+
+        details[open] summary {
+            background: #69c773;
+            color: #333;
+        }
+
+        table {
+            border: 0;
+            width: 100%;
+        }
+
+        th, td {
+            vertical-align: top;
+            text-align: left;
+            padding: 0.5em;
+            border-bottom: 1px solid #E6E6E6;
+        }
+
+        th {
+            width: 200px;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="starter-template">
+
+        <div class="row" style="text-align: left;">
+            <div class="col-md-2"><h3>Hata Türü</h3></div>
+            <div class="col-md-2"><h3>Modül</h3></div>
+            <div class="col-md-6"><h3>Hata</h3></div>
+            <div class="col-md-2"><h3>Yorum</h3></div>
+
+        </div>
+
+        {% for k in kayitlar %}
+            <div class="row" style="text-align: left;" id="hata_{{ k.0 }}_">
+                <div class="col-md-2">{{ k.4 }}</div>
+                <div class="col-md-2"><p onclick="toggleDiv('hata_{{ k.0 }}')">{{ k.3 }}</p></div>
+                <div class="col-md-6"><p onclick="toggleDiv('hata_{{ k.0 }}')">{{ k.6 }}</p></div>
+                <div class="col-md-2"><p onclick="toggleDiv('hata_{{ k.0 }}')"><a
+                        href="/{{ k.3|lower }}/{{ k.4|lower }}/{{ k.8 }}/#disqus_thread"></a></p></div>
+            </div>
+
+            <div id="hata_{{ k.0 }}"
+                 style="display: none; text-align: left; background: #eeeeee; ">
+
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>Dosya</th>
+                        <th>Satır</th>
+                        <th>Detay</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{ k.1 }}</td>
+                        <td>{{ k.2 }}</td>
+                        <td><a href="/{{ k.3|lower }}/{{ k.4|lower }}/{{ k.8 }}/">Git.</a></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+
+
+        {% endfor %}
+
+
+    </div>
+
+</div><!-- /.container -->
+
+<div id="AramaDIV">
+    <input id="txtarama"/>
+</div>
+
+
+<script>
+
+    (function () {
+        var d = document, s = d.createElement('script');
+
+        s.src = '//pythome.disqus.com/embed.js';
+
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Tarayıcınızın JavaScript özelliğini aktif etmelisiniz. <a href="https://disqus.com/?ref_noscript"
+                                                                    rel="nofollow"></a></noscript>
+
+<script id="dsq-count-scr" src="//pythome.disqus.com/count.js" async></script>
+
+
+<script src="/static/jquery.min.js"></script>
+<script src="/static/bootstrap.min.js"></script>
+<script src="/static/ie10-viewport-bug-workaround.js"></script>
+<script src="/static/jquery-ui.min.js"></script>
+<script src="/static/jquery.easy-autocomplete.min.js"></script>
+
+
+<script type="text/javascript">
+
+    function toggleDiv(divId) {
+        $("#" + divId).slideToggle('fast', function () {
+            {#            if ($("#" + divId).is(':hidden')) {#}
+            {#                $("#" + divId + "_").css("background", "#ffffff");#}
+            {#            }#}
+            {#            else {#}
+            {#                $("#" + divId + "_").css("background", "#ff9900");#}
+            {#            }#}
+        });
+    }
+
+
+    $(document).ready(function () {
+
+        var options = {
+
+            data: [
+
+                {% for kk in hataarama %}
+                    {
+                        "id": "{{ kk.id }}",
+                        "hata": "{{ kk.HataEng }}"
+                    },
+                {% endfor %}
+
+            ],
+            getValue: "hata",
+            placeholder: "Aranacak hata",
+            theme: "blue-light",
+            list: {
+                match: {
+                    enabled: true
+                },
+                onChooseEvent: function () {
+                    var value = $("#txtarama").getSelectedItemData().id;
+
+                    toggleDiv('hata_' + value);
+
+                    $('html, body').animate({
+                        scrollTop: $("#" + "hata_" + value + "_").offset().top - 200
+                    }, 1000);
+
+                }
+            }
+        };
+
+        $("#txtarama").easyAutocomplete(options);
+    });
+
+</script>
+
+
+<script>
+
+</script>
+
+</body>
+</html>
