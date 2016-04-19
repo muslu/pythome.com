@@ -14,7 +14,7 @@ from django.shortcuts import render
 
 memc = memcache.Client(['127.0.0.1:11211'], debug=1)
 
-conn = MySQLdb.connect(host="localhost", user="muslu", passwd="CeMMec+6", db="HataBull", charset="utf8", use_unicode=True)
+conn = MySQLdb.connect(host="localhost", user="", passwd="", db="", charset="utf8", use_unicode=True)
 cursor = conn.cursor()
 dcursor = conn.cursor(MySQLdb.cursors.DictCursor)
 
@@ -39,11 +39,6 @@ def detaygoster(request, modul, tur, slug):
 
     return render(request, 'detay.html', {'kayitlar': CacheDetay, 'hataturayni': CacheHataTuruDetay})
 
-
-#
-# def anasayfa(request):
-#     return render(request, 'index.html')
-#
 
 
 
